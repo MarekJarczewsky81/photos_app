@@ -1,0 +1,7 @@
+vue ui
+
+yarn add primevue primeicons primeflex
+
+yarn add animate.css@4.1.0
+
+npm install normalize.css
