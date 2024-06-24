@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "animate.css": "4.1.0",
+    "axios": "0.20.0",
     "core-js": "^3.8.3",
     "normalize-scss": "^8.0.0",
     "normalize.css": "^8.0.1",
