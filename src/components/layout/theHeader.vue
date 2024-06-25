@@ -7,7 +7,6 @@
 <script>
 export default {
   name: 'theHeader'
-  // Your component's properties, methods, etc. go here
 }
 </script>
 

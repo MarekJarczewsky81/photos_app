@@ -16,7 +16,11 @@
           </button>
         </div>
         <categories-list />
-        <router-view />
+        <router-view v-slot="{ Component }">
+          <SlideFadeAnimation>
+            <component :is="Component" :key="$route.fullPath" />
+          </SlideFadeAnimation>
+        </router-view>
       </main>
       <app-footer />
     </div>
@@ -28,6 +32,7 @@ import AppHeader from '@/components/layout/theHeader.vue'
 import AppFooter from '@/components/layout/theFooter.vue'
 import CategoriesList from '@/components/features/CategoriesList.vue'
 import MainTitle from '@/components/layout/MainTitle.vue'
+import SlideFadeAnimation from '@/components/layout/SlideFadeAnimation.vue'
 import { mapActions } from 'vuex'
 
 export default {
@@ -36,7 +41,8 @@ export default {
     AppHeader,
     AppFooter,
     CategoriesList,
-    MainTitle
+    MainTitle,
+    SlideFadeAnimation
   },
   methods: {
     ...mapActions([

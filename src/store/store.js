@@ -4,8 +4,9 @@ import { apiUrl } from '@/config'
 
 export default createStore({
   state: {
-    categories: []
+    categories: [],
     // Dodanie tablicy categories do stanu
+    photos: []
   },
   getters: {
     // Getter do pobierania kategorii
@@ -15,6 +16,10 @@ export default createStore({
     }
   },
   mutations: {
+    // Mutacja do aktualizacji zdjęć
+    UPDATE_PHOTOS (state, photos) {
+      state.photos = photos
+    },
     // Mutacja do aktualizacji kategorii
     UPDATE_CATEGORIES (state, categories) {
       state.categories = categories
@@ -36,6 +41,14 @@ export default createStore({
     }
   },
   actions: {
+    async fetchPhotos ({ commit }, page) {
+      const res = await axios.get(`${apiUrl}/photos/${page}`)
+      commit('UPDATE_PHOTOS', res.data)
+    },
+    async fetchCategoryPhotos ({ commit }, { category, page }) {
+      const res = await axios.get(`${apiUrl}/photos/${category}/${page}`)
+      commit('UPDATE_PHOTOS', res.data)
+    },
     async fetchCategories ({ commit }) {
       try {
         const res = await axios.get(`${apiUrl}/categories`)
