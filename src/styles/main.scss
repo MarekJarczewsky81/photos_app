@@ -1,0 +1,12 @@
+// Import normalize.scss do resetowania stylów przeglądarki
+@import 'normalize.scss';
+
+// Import globalnych stylów projektu
+@import 'global.scss';
+
+// Import stylów PrimeVue (przykład)
+@import '~primevue/resources/themes/saga-blue/theme.css';
+@import '~primevue/resources/primevue.min.css';
+@import '~primeicons/primeicons.css';
+
+// Tutaj możesz dodać więcej importów lub własnych stylów
