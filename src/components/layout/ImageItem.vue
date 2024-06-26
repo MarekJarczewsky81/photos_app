@@ -1,23 +1,30 @@
 <template>
   <img
+    v-if="src"
     :src="imageSrc"
+    :alt="alt"
     class="image">
+  <div v-else>Brak obrazu</div>
 </template>
 
 <script>
 import { imagesUrl } from '@/config'
 
 export default {
-  name: 'PhotosList',
+  name: 'ImageItem',
   props: {
     src: {
       type: String,
       required: true
+    },
+    alt: {
+      type: String,
+      default: 'Image'
     }
   },
   computed: {
     imageSrc () {
-      return `${imagesUrl}/${this.src}`
+      return this.src ? `${imagesUrl}/${this.src}` : ''
     }
   }
 }

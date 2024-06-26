@@ -25,7 +25,8 @@ export default {
   },
   props: {
     category: {
-      type: String
+      type: String,
+      required: false
     }
   },
   created () {

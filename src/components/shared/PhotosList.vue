@@ -1,25 +1,20 @@
 <template>
-  <div>
-    <div v-if="photos.length === 0">
-      <alert>Nie znaleziono zdjęć.</alert>
-    </div>
-    <div v-else>
-      <photos-summary
-        v-for="photo in photos"
-        :key="photo.id"
-        :photo="photo"
-      />
-    </div>
+  <div class="photos-list">
+    <PhotoSummary
+      v-for="photo in photos"
+      :key="photo.id"
+      :photo="photo"
+    />
   </div>
 </template>
 
 <script>
-import PhotosSummary from '@/components/layout/PhotosSummary.vue'
+import PhotoSummary from '@/components/layout/PhotoSummary.vue'
 
 export default {
   name: 'PhotosList',
   components: {
-    PhotosSummary
+    PhotoSummary
   },
   props: {
     photos: {
@@ -31,5 +26,9 @@ export default {
 </script>
 
 <style scoped>
-/* Optional: additional styles for the list */
+.photos-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+}
 </style>

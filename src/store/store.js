@@ -42,8 +42,13 @@ export default createStore({
   },
   actions: {
     async fetchPhotos ({ commit }, page) {
-      const res = await axios.get(`${apiUrl}/photos/${page}`)
-      commit('UPDATE_PHOTOS', res.data)
+      try {
+        const res = await axios.get(`${apiUrl}/photos/${page}`)
+        console.log('Otrzymane dane:', res.data) // do debugowania
+        commit('UPDATE_PHOTOS', res.data)
+      } catch (error) {
+        console.error('Błąd podczas pobierania zdjęć:', error)
+      }
     },
     async fetchCategoryPhotos ({ commit }, { category, page }) {
       const res = await axios.get(`${apiUrl}/photos/${category}/${page}`)
