@@ -5,54 +5,111 @@ import { apiUrl } from '@/config'
 export default createStore({
   state: {
     categories: [],
-    // Dodanie tablicy categories do stanu
-    photos: []
+    photos: [],
+    photosRequest: {
+      pending: false,
+      error: false,
+      success: false
+    },
+    allPhotosLoaded: false
   },
   getters: {
-    // Getter do pobierania kategorii
     getCategories: state => state.categories,
     categoriesAmount (state) {
       return state.categories.length
     }
   },
   mutations: {
-    // Mutacja do aktualizacji zdjęć
+    ADD_VOTE (state, photoId) {
+      const photo = state.photos.find(p => p.id === photoId)
+      if (photo) {
+        photo.votes += 1
+      }
+    },
     UPDATE_PHOTOS (state, photos) {
       state.photos = photos
     },
-    // Mutacja do aktualizacji kategorii
+    ADD_PHOTOS (state, photos) {
+      state.photos = state.photos.concat(photos)
+    },
     UPDATE_CATEGORIES (state, categories) {
       state.categories = categories
     },
-    // Mutacja do dodawania nowej kategorii
     ADD_CATEGORY (state, category) {
       state.categories.push(category)
     },
-    // Mutacja do usuwania kategorii
     REMOVE_CATEGORY (state, categoryId) {
       state.categories = state.categories.filter(cat => cat.id !== categoryId)
     },
-    // Mutacja do aktualizacji istniejącej kategorii
     UPDATE_CATEGORY (state, updatedCategory) {
       const index = state.categories.findIndex(cat => cat.id === updatedCategory.id)
       if (index !== -1) {
         state.categories.splice(index, 1, updatedCategory)
       }
+    },
+    START_PHOTOS_REQUEST (state) {
+      state.photosRequest = {
+        pending: true,
+        error: false,
+        success: false
+      }
+    },
+    END_PHOTOS_REQUEST (state) {
+      state.photosRequest = {
+        pending: false,
+        error: false,
+        success: true
+      }
+    },
+    ERROR_PHOTOS_REQUEST (state) {
+      state.photosRequest = {
+        pending: false,
+        error: true,
+        success: false
+      }
+    },
+    TOGGLE_ALL_PHOTOS_LOADED (state) {
+      state.allPhotosLoaded = !state.allPhotosLoaded
     }
   },
   actions: {
-    async fetchPhotos ({ commit }, page) {
+    async addVote ({ commit }, photoId) {
       try {
-        const res = await axios.get(`${apiUrl}/photos/${page}`)
-        console.log('Otrzymane dane:', res.data) // do debugowania
-        commit('UPDATE_PHOTOS', res.data)
-      } catch (error) {
-        console.error('Błąd podczas pobierania zdjęć:', error)
+        commit('START_PHOTOS_REQUEST')
+        await axios.put(`${apiUrl}/photos/vote/${photoId}`)
+        commit('ADD_VOTE', photoId)
+        commit('END_PHOTOS_REQUEST')
+      } catch (err) {
+        commit('ERROR_PHOTOS_REQUEST')
       }
     },
-    async fetchCategoryPhotos ({ commit }, { category, page }) {
-      const res = await axios.get(`${apiUrl}/photos/${category}/${page}`)
-      commit('UPDATE_PHOTOS', res.data)
+    async fetchPhotosFromAPI ({ commit, state }, { url, page }) {
+      try {
+        // if it's first set of photos and allPhotosLoaded is true => make it default false
+        if (state.allPhotosLoaded && page === 1) commit('TOGGLE_ALL_PHOTOS_LOADED')
+
+        // it's not the first page and allPhotosLoaded is true? => stop function
+        if (state.allPhotosLoaded) return false
+
+        commit('START_PHOTOS_REQUEST')
+        const res = await axios.get(url)
+        await new Promise((resolve) => { setTimeout(resolve, 2000) })
+        commit('END_PHOTOS_REQUEST')
+
+        // if the set is not full, toggle allPhotosLoaded
+        if (res.data.length < 12) commit('TOGGLE_ALL_PHOTOS_LOADED')
+
+        if (page > 1) commit('ADD_PHOTOS', res.data)
+        else commit('UPDATE_PHOTOS', res.data)
+      } catch (err) {
+        commit('ERROR_PHOTOS_REQUEST')
+      }
+    },
+    async fetchPhotos ({ dispatch }, page) {
+      dispatch('fetchPhotosFromAPI', { url: `${apiUrl}/photos/${page}`, page })
+    },
+    async fetchCategoryPhotos ({ dispatch }, { category, page }) {
+      dispatch('fetchPhotosFromAPI', { url: `${apiUrl}/photos/${category}/${page}`, page })
     },
     async fetchCategories ({ commit }) {
       try {
@@ -62,19 +119,15 @@ export default createStore({
         console.error('Error fetching categories:', error)
       }
     },
-    // Akcja do aktualizacji kategorii
     updateCategories ({ commit }, categories) {
       commit('UPDATE_CATEGORIES', categories)
     },
-    // Akcja do dodawania nowej kategorii
     addCategory ({ commit }, category) {
       commit('ADD_CATEGORY', category)
     },
-    // Akcja do usuwania kategorii
     removeCategory ({ commit }, categoryId) {
       commit('REMOVE_CATEGORY', categoryId)
     },
-    // Akcja do aktualizacji istniejącej kategorii
     updateCategory ({ commit }, updatedCategory) {
       commit('UPDATE_CATEGORY', updatedCategory)
     }

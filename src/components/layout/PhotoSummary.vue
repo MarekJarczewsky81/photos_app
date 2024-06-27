@@ -7,6 +7,7 @@
           <span>{{ photo.votes }}</span>
           <Button icon="pi pi-star" class="p-button-rounded p-button-text p-button-sm" />
         </div>
+        <div class="photo-vote-layer" @click="handleVote"></div>
       </div>
     </template>
     <template v-slot:title>
@@ -38,6 +39,12 @@ export default {
       type: Object,
       required: true
     }
+  },
+  methods: {
+    handleVote () {
+      console.log('Emitting vote for photo:', this.photo.id)
+      this.$emit('vote', this.photo.id)
+    }
   }
 }
 </script>
@@ -45,6 +52,7 @@ export default {
 <style scoped>
 .photo-summary {
   height: 100%;
+  position: relative;
 }
 
 .photo-header {
@@ -70,6 +78,21 @@ export default {
 
 .photo-votes span {
   margin-right: 5px;
+}
+
+.photo-vote-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(155, 89, 182, 0.3);
+  opacity: 0;
+  cursor: pointer;
+}
+
+.photo-vote-layer:hover {
+  opacity: 1;
 }
 
 .photo-summary__title {

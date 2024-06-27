@@ -4,6 +4,7 @@
       v-for="photo in photos"
       :key="photo.id"
       :photo="photo"
+      @vote="handleVote"
     />
   </div>
 </template>
@@ -20,6 +21,12 @@ export default {
     photos: {
       type: Array,
       required: true
+    }
+  },
+  methods: {
+    handleVote (photoId) {
+      console.log('PhotosList received vote event for photo:', photoId)
+      this.$emit('vote', photoId)
     }
   }
 }
