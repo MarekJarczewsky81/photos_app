@@ -1,9 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
-// import HomePage from '@/pages/HomePage.vue'
 
 // Lazy-loaded components
 const HomePage = () => import('@/pages/HomePage.vue')
 const CategoryPhotosPage = () => import('@/pages/CategoryPhotosPage.vue')
+const AddPhotoPage = () => import('@/pages/AddPhotoPage.vue')
 
 const routes = [
   {
@@ -16,6 +16,11 @@ const routes = [
     name: 'category-photos',
     component: CategoryPhotosPage,
     props: route => ({ category: route.params.category })
+  },
+  {
+    path: '/add-photo',
+    name: 'add-photo',
+    component: AddPhotoPage
   }
 ]
 

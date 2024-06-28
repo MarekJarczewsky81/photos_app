@@ -10,10 +10,12 @@
             <main-title>PhotosApp |</main-title>
             <span class="subtitle">share your moments</span>
           </div>
-          <button class="p-button p-component p-button-rounded p-button-primary">
-            <i class="pi pi-plus"></i>
-            <span class="p-button-label">Submit</span>
-          </button>
+          <router-link to="/add-photo">
+            <button class="p-button p-component p-button-rounded p-button-primary">
+              <i class="pi pi-plus"></i>
+              <span class="p-button-label">Submit</span>
+            </button>
+          </router-link>
         </div>
         <categories-list />
         <router-view v-slot="{ Component }">
