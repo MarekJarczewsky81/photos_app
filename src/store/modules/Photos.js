@@ -16,6 +16,9 @@ export default {
     getPhotos: state => state.photos
   },
   mutations: {
+    ADD_PHOTO (state, photo) {
+      state.photos.unshift(photo)
+    },
     ADD_VOTE (state, photoId) {
       const photo = state.photos.find(p => p._id === photoId)
       if (photo) {
@@ -54,6 +57,19 @@ export default {
     }
   },
   actions: {
+    async addPhoto ({ commit }, formData) {
+      try {
+        const response = await axios.post(`${apiUrl}/photos`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        })
+        commit('ADD_PHOTO', response.data)
+      } catch (error) {
+        console.error('Error adding photo:', error)
+        throw error
+      }
+    },
     async addVote ({ commit }, photoId) {
       if (!photoId) {
         console.error('Attempted to add vote for undefined photoId')

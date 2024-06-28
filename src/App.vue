@@ -49,10 +49,10 @@ export default {
   methods: {
     ...mapActions([
       'fetchCategories'
-    ]) // Nazwa akcji, którą chcesz wywołać
+    ])
   },
   created () {
-    this.fetchCategories() // Wywołanie akcji w metodzie cyklu życia created
+    this.$store.dispatch('categories/fetchCategories') // Wywołanie akcji w metodzie cyklu życia created
   }
 }
 </script>
