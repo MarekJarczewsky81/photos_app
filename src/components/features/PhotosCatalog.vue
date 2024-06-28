@@ -54,8 +54,12 @@ export default {
       this.$refs.catalog.addEventListener('scroll', this.handleScroll)
     },
     handleVote (photoId) {
-      console.log('PhotosCatalog received vote event for photo:', photoId)
-      this.addVote(photoId)
+      if (photoId) {
+        console.log('PhotosCatalog received vote event for photo:', photoId)
+        this.addVote(photoId)
+      } else {
+        console.error('Received undefined photoId in PhotosCatalog')
+      }
     }
   },
   props: {

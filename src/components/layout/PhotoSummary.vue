@@ -5,9 +5,8 @@
         <ImageItem :src="photo.src" :alt="photo.title" class="photo-summary__image" />
         <div class="photo-votes">
           <span>{{ photo.votes }}</span>
-          <Button icon="pi pi-star" class="p-button-rounded p-button-text p-button-sm" />
+          <Button icon="pi pi-star" class="p-button-rounded p-button-text p-button-sm vote-button" :class="{ 'voted': voted }" @click="handleVote" />
         </div>
-        <div class="photo-vote-layer" @click="handleVote"></div>
       </div>
     </template>
     <template v-slot:title>
@@ -40,10 +39,19 @@ export default {
       required: true
     }
   },
+  data () {
+    return {
+      voted: false
+    }
+  },
   methods: {
     handleVote () {
-      console.log('Emitting vote for photo:', this.photo.id)
-      this.$emit('vote', this.photo.id)
+      if (this.photo && this.photo._id) {
+        console.log('Emitting vote for photo:', this.photo._id)
+        this.$emit('vote', this.photo._id)
+      } else {
+        console.error('Photo ID is undefined')
+      }
     }
   }
 }
@@ -80,19 +88,12 @@ export default {
   margin-right: 5px;
 }
 
-.photo-vote-layer {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(155, 89, 182, 0.3);
-  opacity: 0;
-  cursor: pointer;
+.vote-button {
+  transition: transform 0.3s ease;
 }
 
-.photo-vote-layer:hover {
-  opacity: 1;
+.vote-button.voted {
+  transform: scale(1.2);
 }
 
 .photo-summary__title {

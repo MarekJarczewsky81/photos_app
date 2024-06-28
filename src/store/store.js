@@ -21,7 +21,7 @@ export default createStore({
   },
   mutations: {
     ADD_VOTE (state, photoId) {
-      const photo = state.photos.find(p => p.id === photoId)
+      const photo = state.photos.find(p => p._id === photoId)
       if (photo) {
         photo.votes += 1
       }
@@ -74,13 +74,15 @@ export default createStore({
   },
   actions: {
     async addVote ({ commit }, photoId) {
+      if (!photoId) {
+        console.error('Attempted to add vote for undefined photoId')
+        return
+      }
       try {
-        commit('START_PHOTOS_REQUEST')
         await axios.put(`${apiUrl}/photos/vote/${photoId}`)
         commit('ADD_VOTE', photoId)
-        commit('END_PHOTOS_REQUEST')
       } catch (err) {
-        commit('ERROR_PHOTOS_REQUEST')
+        console.error('Error adding vote:', err)
       }
     },
     async fetchPhotosFromAPI ({ commit, state }, { url, page }) {

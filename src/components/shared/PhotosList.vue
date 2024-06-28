@@ -2,7 +2,7 @@
   <div class="photos-list">
     <PhotoSummary
       v-for="photo in photos"
-      :key="photo.id"
+      :key="photo._id"
       :photo="photo"
       @vote="handleVote"
     />
@@ -25,8 +25,12 @@ export default {
   },
   methods: {
     handleVote (photoId) {
-      console.log('PhotosList received vote event for photo:', photoId)
-      this.$emit('vote', photoId)
+      if (photoId) {
+        console.log('PhotosList received vote event for photo:', photoId)
+        this.$emit('vote', photoId)
+      } else {
+        console.error('Received undefined photoId in PhotosList')
+      }
     }
   }
 }
