@@ -61,6 +61,8 @@ import Dropdown from 'primevue/dropdown'
 import Textarea from 'primevue/textarea'
 import Button from 'primevue/button'
 import Message from 'primevue/message'
+import axios from 'axios'
+import { apiUrl } from '@/config'
 
 export default {
   name: 'AddPhotoForm',
@@ -83,7 +85,7 @@ export default {
         title: '',
         author: '',
         description: '',
-        category: '',
+        category: null,
         file: null
       },
       isSuccess: false,
@@ -97,19 +99,24 @@ export default {
     async handleSubmit () {
       this.isSuccess = false
       this.isError = false
-
-      try {
+      if (!this.form.category) {
+        console.error('Category is not selected')
+        this.isError = true
+        return
+      } try {
         const formData = new FormData()
         formData.append('title', this.form.title)
         formData.append('author', this.form.author)
         formData.append('description', this.form.description)
-        formData.append('category', this.form.category)
+        formData.append('category', this.form.category.name)
         if (this.form.file) {
           formData.append('file', this.form.file)
         }
-        await this.$store.dispatch('photos/addPhoto', formData)
+        await axios.post(`${apiUrl}/photos`, formData, { 'Content-Type': 'multipart/form-data' })
         this.isSuccess = true
+        const category = this.form.category.name
         this.resetForm()
+        this.$router.push(`/photos/${category}`)
       } catch (error) {
         console.error('Error submitting form:', error)
         this.isError = true
