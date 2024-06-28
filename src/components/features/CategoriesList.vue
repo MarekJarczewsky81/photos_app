@@ -2,13 +2,13 @@
   <slide-fade-animation>
     <div class="categories-list">
       <div v-if="categories.length">
-        <button
+        <router-link
           v-for="category in categories"
           :key="category.id"
           class="p-button p-component p-button-outlined p-button-primary category-button"
-          @click="selectCategory(category)">
+          :to="{ name: 'category-photos', params: { category: category.name } }">
           {{ category.name }}
-        </button>
+        </router-link>
       </div>
       <div v-else>
         <p>No categories available</p>
@@ -34,12 +34,12 @@ export default {
   },
   created () {
     this.$store.dispatch('fetchCategories')
-  },
-  methods: {
-    selectCategory (category) {
-      this.$store.commit('SET_SELECTED_CATEGORY', category)
-    }
   }
+  // methods: {
+  //   selectCategory (category) {
+  //     this.$store.commit('SET_SELECTED_CATEGORY', category)
+  //   }
+  // }
 }
 </script>
 

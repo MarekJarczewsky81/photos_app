@@ -2,10 +2,18 @@
   <Card class="photo-summary p-shadow-4">
     <template v-slot:header>
       <div class="photo-header">
-        <ImageItem :src="photo.src" :alt="photo.title" class="photo-summary__image" />
+        <ImageItem
+          :src="photo.src"
+          :alt="photo.title"
+          class="photo-summary__image" />
+        <div class="photo-hover-layer" @click="handleVote"></div>
         <div class="photo-votes">
           <span>{{ photo.votes }}</span>
-          <Button icon="pi pi-star" class="p-button-rounded p-button-text p-button-sm vote-button" :class="{ 'voted': voted }" @click="handleVote" />
+          <Button
+            icon="pi pi-star"
+            class="p-button-rounded p-button-text p-button-sm vote-button"
+            :class="{ 'voted': voted }"
+            @click="handleVote" />
         </div>
       </div>
     </template>
@@ -14,7 +22,9 @@
     </template>
     <template v-slot:content>
       <p class="photo-summary__author">by {{ photo.author }}</p>
-      <Tag :value="photo.category" class="p-mr-2" />
+      <Tag
+        :value="photo.category"
+        class="p-mr-2" />
     </template>
   </Card>
 </template>
@@ -49,6 +59,7 @@ export default {
       if (this.photo && this.photo._id) {
         console.log('Emitting vote for photo:', this.photo._id)
         this.$emit('vote', this.photo._id)
+        this.voted = true // optional: add visual feedback for voting
       } else {
         console.error('Photo ID is undefined')
       }
@@ -61,6 +72,11 @@ export default {
 .photo-summary {
   height: 100%;
   position: relative;
+  transition: box-shadow 0.3s ease;
+}
+
+.photo-summary:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .photo-header {
@@ -71,6 +87,21 @@ export default {
   height: 400px;
   object-fit: cover;
   width: 100%;
+}
+
+.photo-hover-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(155, 89, 182, 0.3);
+  pointer-events: none; /* Ensure the hover layer does not block interactions */
+  display: none;
+}
+
+.photo-header:hover .photo-hover-layer {
+  display: block;
 }
 
 .photo-votes {
