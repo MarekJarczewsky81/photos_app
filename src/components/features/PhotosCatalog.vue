@@ -1,10 +1,10 @@
 <template>
   <div class="photos-catalog-container" ref="catalog">
     <photos-list :photos="photos" @vote="handleVote" />
-    <div v-if="photosRequest.pending" class="loader-overlay">
+    <div v-if="photosRequest && photosRequest.pending" class="loader-overlay">
       <ProgressSpinner />
     </div>
-    <div v-if="photosRequest.error" class="error-alert">
+    <div v-if="photosRequest && photosRequest.error" class="error-alert">
       Error! Try again...
     </div>
   </div>
@@ -22,32 +22,33 @@ export default {
     ProgressSpinner
   },
   computed: {
-    ...mapState({
-      photos: state => state.photos,
-      photosRequest: state => state.photosRequest,
-      allPhotosLoaded: state => state.allPhotosLoaded
-    })
+    ...mapState('photos', [
+      'photos',
+      'photosRequest',
+      'allPhotosLoaded'
+    ])
   },
   methods: {
-    ...mapActions([
-      'fetchPhotos',
-      'fetchCategoryPhotos',
-      'addVote'
-    ]),
+    ...mapActions('photos', ['fetchPhotos', 'fetchCategoryPhotos', 'addVote']),
     handleScroll () {
       const elem = this.$refs.catalog
       const bottomOfWindow = Math.ceil(elem.scrollTop + elem.offsetHeight) >= elem.scrollHeight
 
-      if (bottomOfWindow && !this.photosRequest.pending && !this.allPhotosLoaded) {
+      if (bottomOfWindow && this.photosRequest && !this.photosRequest.pending && !this.allPhotosLoaded) {
         this.loadPhotos()
       }
     },
-    loadPhotos () {
-      this.currentPage += 1
-      if (!this.category) {
-        this.fetchPhotos(this.currentPage)
-      } else {
-        this.fetchCategoryPhotos({ category: this.category, page: this.currentPage })
+    async loadPhotos () {
+      try {
+        this.currentPage += 1
+        if (!this.category) {
+          await this.fetchPhotos(this.currentPage)
+        } else {
+          await this.fetchCategoryPhotos({ category: this.category, page: this.currentPage })
+        }
+      } catch (error) {
+        console.error('Error loading photos:', error)
+        // Możesz tu dodać jakąś logikę obsługi błędów, np. wyświetlenie komunikatu
       }
     },
     prepareScroll () {
@@ -60,6 +61,12 @@ export default {
       } else {
         console.error('Received undefined photoId in PhotosCatalog')
       }
+    }
+  },
+  watch: {
+    category () {
+      this.currentPage = 1
+      this.loadPhotos()
     }
   },
   props: {

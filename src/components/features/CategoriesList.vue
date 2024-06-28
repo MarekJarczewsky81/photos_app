@@ -1,7 +1,7 @@
 <template>
   <slide-fade-animation>
     <div class="categories-list">
-      <div v-if="categories.length">
+      <div v-if="categories && categories.length">
         <router-link
           v-for="category in categories"
           :key="category.id"
@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import SlideFadeAnimation from '@/components/layout/SlideFadeAnimation.vue'
 
 export default {
@@ -27,19 +27,14 @@ export default {
     SlideFadeAnimation
   },
   computed: {
-    ...mapGetters(['getCategories']),
-    categories () {
-      return this.getCategories
-    }
+    ...mapState('categories', ['categories'])
+  },
+  methods: {
+    ...mapActions('categories', ['fetchCategories'])
   },
   created () {
-    this.$store.dispatch('fetchCategories')
+    this.$store.dispatch('categories/fetchCategories')
   }
-  // methods: {
-  //   selectCategory (category) {
-  //     this.$store.commit('SET_SELECTED_CATEGORY', category)
-  //   }
-  // }
 }
 </script>
 

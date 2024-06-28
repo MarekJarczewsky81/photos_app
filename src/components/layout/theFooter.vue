@@ -6,13 +6,13 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'theFooter',
   computed: {
-    ...mapState({
-      categoriesCount: state => state.categories.length
+    ...mapGetters({
+      categoriesCount: 'categories/categoriesAmount'
     })
   }
 }
@@ -32,5 +32,16 @@ export default {
   bottom: 10px;
   position: absolute;
   text-align: right;
+}
+
+.categories-info a {
+  color: #007bff;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.categories-info a:hover {
+  color: #0056b3;
+  text-decoration: underline;
 }
 </style>

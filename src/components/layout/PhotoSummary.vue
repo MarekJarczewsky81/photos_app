@@ -18,7 +18,7 @@
       </div>
     </template>
     <template v-slot:title>
-      <h3 class="photo-summary__title">{{ photo.title }}</h3>
+      <h3 class="photo-summary__title" v-once>{{ photo.title }}</h3>
     </template>
     <template v-slot:content>
       <p class="photo-summary__author">by {{ photo.author }}</p>
