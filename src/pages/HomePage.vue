@@ -2,6 +2,7 @@
   <div class="home">
     <h1>Photos</h1>
     <photos-catalog />
+    <router-view />
   </div>
 </template>
 
@@ -15,3 +16,9 @@ export default {
   }
 }
 </script>
+
+<style>
+.home {
+  position: relative;
+}
+</style>

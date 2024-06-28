@@ -10,10 +10,12 @@ export default {
       error: false,
       success: false
     },
-    allLoaded: false
+    allLoaded: false,
+    singlePhoto: null
   },
   getters: {
-    getPhotos: state => state.photos
+    getPhotos: state => state.photos,
+    getSinglePhoto: state => state.singlePhoto
   },
   mutations: {
     ADD_PHOTO (state, photo) {
@@ -27,9 +29,6 @@ export default {
     },
     UPDATE_PHOTOS (state, photos) {
       state.photos = photos
-    },
-    ADD_PHOTOS (state, photos) {
-      state.photos = state.photos.concat(photos)
     },
     START_REQUEST (state) {
       state.photosRequest = {
@@ -54,6 +53,9 @@ export default {
     },
     TOGGLE_ALL_LOADED (state) {
       state.allLoaded = !state.allLoaded
+    },
+    SET_SINGLE_PHOTO (state, photo) { // Nowa mutacja
+      state.singlePhoto = photo
     }
   },
   actions: {
@@ -105,6 +107,17 @@ export default {
     },
     async fetchCategoryPhotos ({ dispatch }, { category, page }) {
       dispatch('fetchFromAPI', { url: `${apiUrl}/photos/${category}/${page}`, page })
+    },
+    async fetchSinglePhoto ({ commit }, photoId) { // Nowa akcja
+      commit('START_REQUEST')
+      try {
+        const response = await axios.get(`${apiUrl}/photos/id/${photoId}`)
+        commit('SET_SINGLE_PHOTO', response.data)
+        commit('END_REQUEST')
+      } catch (error) {
+        console.error('Error fetching single photo:', error)
+        commit('ERROR_REQUEST')
+      }
     }
   }
 }

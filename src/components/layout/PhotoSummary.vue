@@ -5,15 +5,17 @@
         <ImageItem
           :src="photo.src"
           :alt="photo.title"
-          class="photo-summary__image" />
-        <div class="photo-hover-layer" @click="handleVote"></div>
+          class="photo-summary__image"
+          @click.stop="handleVote"
+        />
+        <div class="photo-hover-layer" @click.stop="handleVote"></div>
         <div class="photo-votes">
           <span>{{ photo.votes }}</span>
           <Button
             icon="pi pi-star"
             class="p-button-rounded p-button-text p-button-sm vote-button"
             :class="{ 'voted': voted }"
-            @click="handleVote" />
+            @click.stop="handleVote" />
         </div>
       </div>
     </template>
@@ -21,10 +23,12 @@
       <h3 class="photo-summary__title" v-once>{{ photo.title }}</h3>
     </template>
     <template v-slot:content>
-      <p class="photo-summary__author">by {{ photo.author }}</p>
-      <Tag
+      <div @click="navigateToDetails">
+        <p class="photo-summary__author">by {{ photo.author }}</p>
+        <Tag
         :value="photo.category"
         class="p-mr-2" />
+      </div>
     </template>
   </Card>
 </template>
@@ -63,6 +67,10 @@ export default {
       } else {
         console.error('Photo ID is undefined')
       }
+    },
+    navigateToDetails () {
+      const categoryPath = this.$route.params.category ? `/photos/${this.$route.params.category}` : ''
+      this.$router.push(`${categoryPath}/${this.photo._id}`)
     }
   }
 }

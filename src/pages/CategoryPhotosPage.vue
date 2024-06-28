@@ -2,6 +2,7 @@
   <div class="category-photos-page">
     <h1>{{ categoryTitle }}</h1>
     <photos-catalog :category="category" />
+    <router-view />
   </div>
 </template>
 
@@ -30,5 +31,6 @@ export default {
 <style scoped>
 .category-photos-page {
   padding: 20px;
+  position: relative;
 }
 </style>
